@@ -32,7 +32,9 @@ def promote(config_path: str) -> bool:
 
     # Validación 1: mínimo absoluto de calidad.
     if challenger_metric < minimum:
-        print(f"RECHAZADO v{challenger.version}: {METRIC}={challenger_metric:.4f} < mínimo {minimum}")
+        print(
+            f"RECHAZADO v{challenger.version}: {METRIC}={challenger_metric:.4f} < mínimo {minimum}"
+        )
         return False
 
     # Validación 2: no empeorar al modelo que está en producción (si lo hay).
@@ -47,12 +49,15 @@ def promote(config_path: str) -> bool:
             return False
         champion_metric = client.get_run(champion.run_id).data.metrics[METRIC]
         if challenger_metric < champion_metric:
-            print(f"RECHAZADO v{challenger.version}: {METRIC}={challenger_metric:.4f} "
-                  f"< champion v{champion.version} ({champion_metric:.4f})")
+            print(
+                f"RECHAZADO v{challenger.version}: {METRIC}={challenger_metric:.4f} "
+                f"< champion v{champion.version} ({champion_metric:.4f})"
+            )
             return False
 
     client.set_registered_model_alias(model_name, ALIAS_CHAMPION, challenger.version)
-    print(f"PROMOCIONADO v{challenger.version} a '{ALIAS_CHAMPION}' ({METRIC}={challenger_metric:.4f})")
+    print(f"PROMOCIONADO v{challenger.version} a '{ALIAS_CHAMPION}'")
+    print(f"{METRIC}={challenger_metric:.4f}")
     return True
 
 

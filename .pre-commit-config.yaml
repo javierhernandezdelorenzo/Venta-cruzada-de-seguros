@@ -1,0 +1,28 @@
+# Validación automática en local.
+#
+#   pre-commit install            -> se ejecuta sola en cada "git commit"
+#   pre-commit run --all-files    -> ejecutarla a mano sobre todo el repo
+#
+# Los hooks son locales: usan las herramientas ya instaladas en el entorno
+# (pip install -e ".[dev]"), con las mismas versiones fijadas en pyproject.toml.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff (errores y estilo)
+        entry: ruff check
+        language: system
+        types: [python]
+
+      - id: ruff-format
+        name: ruff (formato)
+        entry: ruff format --check
+        language: system
+        types: [python]
+
+      - id: pytest
+        name: pytest (tests unitarios y de integración)
+        entry: pytest -q
+        language: system
+        pass_filenames: false
+        always_run: true
