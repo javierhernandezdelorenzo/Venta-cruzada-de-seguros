@@ -7,6 +7,9 @@ importa es cómo ordena a los clientes, no si acierta con un umbral de 0,5.
 import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, roc_auc_score
+from sklearn.model_selection import StratifiedKFold, cross_validate
+
+from xsell.config import CV_FOLDS, SEED
 
 
 def ranking_metrics(y_true, score) -> dict[str, float]:
@@ -46,3 +49,15 @@ def lift_table(y_true, score, n_bins: int = 10) -> pd.DataFrame:
     table["lift"] = table["tasa_interes"] / df["y"].mean()
     table["captura_acumulada"] = table["interesados"].cumsum() / df["y"].sum()
     return table[["clientes", "interesados", "tasa_interes", "lift", "captura_acumulada", "score_medio"]]
+
+
+def cross_validation_metrics(model, X, y) -> dict[str, float]:
+    """Media y desviación de PR-AUC y ROC-AUC con validación cruzada estratificada."""
+    cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED)
+    result = cross_validate(model, X, y, cv=cv, scoring=["average_precision", "roc_auc"])
+    return {
+        "cv_pr_auc_mean": result["test_average_precision"].mean(),
+        "cv_pr_auc_std": result["test_average_precision"].std(),
+        "cv_roc_auc_mean": result["test_roc_auc"].mean(),
+        "cv_roc_auc_std": result["test_roc_auc"].std(),
+    }

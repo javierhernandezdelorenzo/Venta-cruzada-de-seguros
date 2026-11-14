@@ -29,6 +29,19 @@ VEHICLE_AGE_ORDER = ["< 1 Year", "1-2 Year", "> 2 Years"]
 # notebooks/02_modelado.ipynb: Gender es sensible y no mejora el ranking.
 EXCLUDED = ("Gender",)
 
+# Columnas que recibe el modelo, y por tanto las que pide el endpoint.
+# Quedan fuera id, Vintage (sin señal) y las de EXCLUDED.
+MODEL_FEATURES = [
+    "Age",
+    "Driving_License",
+    "Region_Code",
+    "Previously_Insured",
+    "Vehicle_Age",
+    "Vehicle_Damage",
+    "Annual_Premium",
+    "Policy_Sales_Channel",
+]
+
 # Una categoría de región o canal necesita al menos este peso en los datos de
 # entrenamiento para tener columna propia; el resto se agrupa en "infrecuentes".
 MIN_FREQUENCY = 0.01

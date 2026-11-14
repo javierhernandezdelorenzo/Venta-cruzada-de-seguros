@@ -1,0 +1,27 @@
+# Configuración de entrenamiento. Cambiar algo aquí y relanzar el entrenamiento
+# genera una ejecución nueva en MLflow y una versión nueva del modelo.
+
+data_path: data/raw/train.csv
+
+mlflow:
+  # SQLite local: suficiente para trabajar en una máquina y necesario para
+  # tener registro de modelos. En un equipo sería un servidor compartido.
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: xsell-propension
+  registered_model_name: xsell-propension
+
+# Hiperparámetros de XGBoost. La búsqueda aleatoria (python -m xsell.tune, 12
+# combinaciones) no encontró nada mejor que estos valores de partida: la mejor
+# dio PR-AUC 0,3685 en CV frente a 0,3675, una diferencia menor que la
+# variación entre particiones (0,003). Se mantiene la opción más simple.
+model:
+  n_estimators: 300
+  learning_rate: 0.05
+  max_depth: 4
+  subsample: 0.8
+  colsample_bytree: 0.8
+
+promotion:
+  # PR-AUC mínimo en test para poder pasar a producción. La regla de negocio
+  # sin modelo consigue 0,25; por debajo de 0,30 el modelo no compensa.
+  min_test_pr_auc: 0.30
