@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xsell"
+version = "0.1.0"
+description = "Modelo de propensión para venta cruzada de seguro de vehículo"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "jupyter",
+    "pytest",
+    "ruff",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
