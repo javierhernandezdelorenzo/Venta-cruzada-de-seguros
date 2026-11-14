@@ -1,0 +1,27 @@
+# Datos: no se versionan (se descargan de Kaggle, ver README)
+data/raw/*
+!data/raw/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MLflow y artefactos de modelos
+mlruns/
+mlartifacts/
+mlflow.db
+models/
+
+# IDE / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
