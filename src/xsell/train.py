@@ -21,7 +21,6 @@ from xsell.evaluate import capture_at, cross_validation_metrics, lift_table, ran
 from xsell.features import EXCLUDED, MODEL_FEATURES
 from xsell.models import build_xgboost
 
-
 # MLflow guarda el pipeline con skops (más seguro que pickle), que exige
 # declarar los tipos ajenos a scikit-learn que se permiten al cargar.
 TRUSTED_TYPES = ["xgboost.core.Booster", "xgboost.sklearn.XGBClassifier"]
@@ -48,15 +47,17 @@ def train(config_path: str) -> str:
 
     with mlflow.start_run():
         mlflow.log_params(cfg["model"])
-        mlflow.log_params({
-            "seed": SEED,
-            "test_size": TEST_SIZE,
-            "cv_folds": CV_FOLDS,
-            "features": ",".join(MODEL_FEATURES),
-            "excluded": ",".join(EXCLUDED),
-            "data_sha256": file_sha256(cfg["data_path"]),
-            "data_rows": len(df),
-        })
+        mlflow.log_params(
+            {
+                "seed": SEED,
+                "test_size": TEST_SIZE,
+                "cv_folds": CV_FOLDS,
+                "features": ",".join(MODEL_FEATURES),
+                "excluded": ",".join(EXCLUDED),
+                "data_sha256": file_sha256(cfg["data_path"]),
+                "data_rows": len(df),
+            }
+        )
 
         # 1) Validación cruzada sobre entrenamiento: estimación de rendimiento.
         mlflow.log_metrics(cross_validation_metrics(model, X_train, y_train))
@@ -86,8 +87,10 @@ def train(config_path: str) -> str:
     MlflowClient().set_registered_model_alias(model_name, ALIAS_CHALLENGER, version)
 
     print(f"Modelo {model_name} v{version} registrado como '{ALIAS_CHALLENGER}'")
-    print(f"PR-AUC  CV: {mlflow.get_run(info.run_id).data.metrics['cv_pr_auc_mean']:.4f}"
-          f"   test: {metrics['test_pr_auc']:.4f}")
+    print(
+        f"PR-AUC  CV: {mlflow.get_run(info.run_id).data.metrics['cv_pr_auc_mean']:.4f}"
+        f"   test: {metrics['test_pr_auc']:.4f}"
+    )
     return version
 
 

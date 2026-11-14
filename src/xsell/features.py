@@ -65,9 +65,17 @@ def build_preprocessor(model_type: str, drop: tuple[str, ...] = ()) -> ColumnTra
     if model_type == "linear":
         blocks = [
             # Edad en 10 tramos para capturar la forma de U invertida.
-            ("age", KBinsDiscretizer(n_bins=10, encode="onehot-dense", strategy="quantile"), ["Age"]),
+            (
+                "age",
+                KBinsDiscretizer(n_bins=10, encode="onehot-dense", strategy="quantile"),
+                ["Age"],
+            ),
             # Prima con cola muy larga: logaritmo y escalado.
-            ("premium", make_pipeline(FunctionTransformer(np.log1p), StandardScaler()), ["Annual_Premium"]),
+            (
+                "premium",
+                make_pipeline(FunctionTransformer(np.log1p), StandardScaler()),
+                ["Annual_Premium"],
+            ),
             ("vehicle_age", OneHotEncoder(sparse_output=False), ["Vehicle_Age"]),
         ]
     elif model_type == "tree":

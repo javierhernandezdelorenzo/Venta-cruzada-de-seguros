@@ -48,7 +48,9 @@ def lift_table(y_true, score, n_bins: int = 10) -> pd.DataFrame:
     )
     table["lift"] = table["tasa_interes"] / df["y"].mean()
     table["captura_acumulada"] = table["interesados"].cumsum() / df["y"].sum()
-    return table[["clientes", "interesados", "tasa_interes", "lift", "captura_acumulada", "score_medio"]]
+    return table[
+        ["clientes", "interesados", "tasa_interes", "lift", "captura_acumulada", "score_medio"]
+    ]
 
 
 def cross_validation_metrics(model, X, y) -> dict[str, float]:

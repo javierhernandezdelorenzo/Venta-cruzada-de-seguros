@@ -41,14 +41,16 @@ def tune(config_path: str, n_trials: int) -> dict:
     best_params, best_score = None, -1.0
     with mlflow.start_run(run_name="tuning"):
         # La semilla fija hace que se prueben siempre las mismas combinaciones.
-        for i, params in enumerate(ParameterSampler(SEARCH_SPACE, n_iter=n_trials, random_state=SEED)):
+        for i, params in enumerate(
+            ParameterSampler(SEARCH_SPACE, n_iter=n_trials, random_state=SEED)
+        ):
             with mlflow.start_run(run_name=f"trial-{i:02d}", nested=True):
                 metrics = cross_validation_metrics(
                     build_xgboost(drop=EXCLUDED, **params), X_train, y_train
                 )
                 mlflow.log_params(params)
                 mlflow.log_metrics(metrics)
-            print(f"trial {i:02d}  PR-AUC {metrics['cv_pr_auc_mean']:.4f} ± {metrics['cv_pr_auc_std']:.4f}  {params}")
+            print(f"trial {i:02d}  PR-AUC CV {metrics['cv_pr_auc_mean']:.4f}  {params}")
             if metrics["cv_pr_auc_mean"] > best_score:
                 best_params, best_score = params, metrics["cv_pr_auc_mean"]
 

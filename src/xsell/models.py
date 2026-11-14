@@ -25,10 +25,12 @@ XGB_PARAMS = {
 
 def build_logistic(drop: tuple[str, ...] = ()) -> Pipeline:
     """Regresión logística: referencia simple e interpretable."""
-    return Pipeline([
-        ("preprocess", build_preprocessor("linear", drop=drop)),
-        ("model", LogisticRegression(max_iter=1000)),
-    ])
+    return Pipeline(
+        [
+            ("preprocess", build_preprocessor("linear", drop=drop)),
+            ("model", LogisticRegression(max_iter=1000)),
+        ]
+    )
 
 
 def build_xgboost(drop: tuple[str, ...] = (), **params) -> Pipeline:
@@ -39,7 +41,9 @@ def build_xgboost(drop: tuple[str, ...] = (), **params) -> Pipeline:
     leer como "probabilidad de interés".
     """
     model = XGBClassifier(**{**XGB_PARAMS, **params}, random_state=SEED, n_jobs=-1)
-    return Pipeline([
-        ("preprocess", build_preprocessor("tree", drop=drop)),
-        ("model", model),
-    ])
+    return Pipeline(
+        [
+            ("preprocess", build_preprocessor("tree", drop=drop)),
+            ("model", model),
+        ]
+    )
