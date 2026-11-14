@@ -3,6 +3,9 @@
 from pathlib import Path
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
+
+from xsell.config import SEED, TEST_SIZE
 
 ID_COL = "id"
 TARGET = "Response"
@@ -52,3 +55,14 @@ def load_data(path: str | Path) -> pd.DataFrame:
     df[CODE_COLS] = df[CODE_COLS].astype(int)
 
     return df[expected]
+
+
+def split_data(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    """Separa en entrenamiento y test final (X_train, X_test, y_train, y_test).
+
+    El split es estratificado para que ambas partes conserven la misma tasa
+    de interesados, y usa la semilla del proyecto para que sea reproducible.
+    """
+    X = df[FEATURES]
+    y = df[TARGET]
+    return train_test_split(X, y, test_size=TEST_SIZE, stratify=y, random_state=SEED)
